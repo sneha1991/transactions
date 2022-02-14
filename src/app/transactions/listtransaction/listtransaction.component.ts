@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 import { Transaction } from 'src/app/models/transaction.model';
 import { deleteTransaction, loadTransactions } from '../Store/actions/transaction.actions';
 import { State } from '../Store/reducers';
-import { selectAll } from '../Store/reducers/transaction.reducer';
 import { getTransactions } from '../Store/selector/transaction.selector';
+
 
 @Component({
   selector: 'app-listtransaction',
@@ -19,12 +19,13 @@ export class ListtransactionComponent implements OnInit {
   constructor(private store: Store<State>,private router:Router,private route:ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.store.dispatch(loadTransactions())
     this.listTransactions();
   }
 
   listTransactions(){
     this.transactions = this.store.select(getTransactions);
-    this.store.select(getTransactions).subscribe(res=>console.log("res",res))
+   // this.store.select(getAllBookEntries).subscribe(res=>console.log("res"))
     // this.transactionService.getTransactions().
     // subscribe(res=>{
     // this.transactions =res.transactions;

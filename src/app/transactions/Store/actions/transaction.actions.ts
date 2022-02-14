@@ -5,7 +5,6 @@ import { Transac, Transaction } from '../../../models/transaction.model';
 
 export const loadTransactions = createAction(
   '[Transaction/API] Load Transactions', 
-   props<{ transactions: Transaction[] }>()
 );
 export const loadTransactionsSuccess = createAction(
   '[Transaction/API] Load Transactions Sucess',

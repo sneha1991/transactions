@@ -10,11 +10,11 @@ import { transactionReducer, TransactionState } from './transaction.reducer';
 
 
 export interface State {
-  transactionsList:TransactionState
+  transactions:TransactionState
 }
 
 export const reducers: ActionReducerMap<State> = {
-  transactionsList:transactionReducer
+  transactions:transactionReducer
 };
 
 

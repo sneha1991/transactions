@@ -1,7 +1,9 @@
-import { Action, createReducer, on } from '@ngrx/store';
+import { Action, createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { Transaction } from '../../../models/transaction.model';
 import * as TransactionActions from '../actions/transaction.actions';
+
+
 
 export const transactionsFeatureKey = 'transactions';
 
@@ -31,9 +33,10 @@ export const reducer = createReducer(
     (state, action) => transactionAdapter.removeOne(action.type, state)
   ),
   
-  on(TransactionActions.loadTransactions,
-    (state, action) => transactionAdapter.setAll(action.transactions, state)
-  ),
+  // on(TransactionActions.loadTransactions,
+  //   (state, action) => transactionAdapter.setAll(action.transactions, state)
+  // ),
+  
   on(TransactionActions.loadTransactionsSuccess,
     (state, action) => transactionAdapter.setAll(action.transactions, state)
   ),
@@ -49,3 +52,5 @@ export const {
   selectAll,
   selectTotal,
 } = transactionAdapter.getSelectors();
+
+
