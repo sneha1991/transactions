@@ -1,0 +1,57 @@
+# try2.ps1
+# Path to the folder you want to monitor
+$folderToMonitor = "C:\Users\sneha\Documents\PS\test"
+
+# Function to check if the number is greater than 500
+function IsNumberGreaterThan500($number) {
+    return $number -gt 500
+}
+
+# Hashtable to store the last processed timestamps for each file
+$lastProcessedFiles = @{}
+
+# Log file path
+$logFilePath = "C:\Users\sneha\Documents\PS\File.log"  # Replace this with the actual path to your log file
+
+# Function to process the file content and detect changes
+function ProcessFiles {
+    Write-Host "Processing files..."
+    $files = Get-ChildItem $folderToMonitor -Filter *.txt | Where-Object { $_.LastWriteTime -gt $lastProcessedFiles[$_.Name] }
+    Write-Host "Number of files to process: $($files.Count)"
+
+    foreach ($file in $files) {
+        $fileContent = Get-Content $file.FullName
+
+        # Extract numbers from the file content
+        $pattern = '\d+'
+        $match = $fileContent | Select-String -Pattern $pattern -AllMatches
+        $matchedNumbers = $match.Matches.Value
+
+        # Check if any number is greater than 500
+        $numbersGreaterThan500 = $matchedNumbers | Where-Object { IsNumberGreaterThan500($_) }
+
+        if ($numbersGreaterThan500.Count -gt 0) {
+            Write-Host "File updated: $($file.Name)"
+            Write-Host "Numbers greater than 500 detected:"
+            $numbersGreaterThan500
+            Write-Host "Log message:"
+            $logMessage = @"
+File updated: $($file.Name)
+Numbers greater than 500 detected:
+$($numbersGreaterThan500 -join "`r`n")
+"@
+            Write-Host $logMessage
+            Add-Content -Path $logFilePath -Value $logMessage
+        }
+
+        # Update the last processed timestamp for the file
+        $lastProcessedFiles[$file.Name] = $file.LastWriteTime
+    }
+}
+
+# Main monitoring loop
+while ($true) {
+    ProcessFiles
+    Write-Host "Monitoring... (Press Ctrl + C to stop)"
+    Start-Sleep -Seconds 5
+}
