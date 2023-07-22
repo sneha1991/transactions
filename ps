@@ -22,13 +22,12 @@ function ProcessFiles {
     foreach ($file in $files) {
         $fileContent = Get-Content $file.FullName
 
-        # Extract numbers from the file content
-        $pattern = '\d+'
-        $match = $fileContent | Select-String -Pattern $pattern -AllMatches
-        $matchedNumbers = $match.Matches.Value
+        # Extract numbers after "Avg Response Time (ms)"
+        $pattern = 'Avg Response Time \(ms\)\s+(\d+)'
+        $matchedLines = $fileContent | Select-String -Pattern $pattern | ForEach-Object { $_.Matches.Groups[1].Value }
 
         # Check if any number is greater than 500
-        $numbersGreaterThan500 = $matchedNumbers | Where-Object { IsNumberGreaterThan500($_) }
+        $numbersGreaterThan500 = $matchedLines | Where-Object { IsNumberGreaterThan500($_) }
 
         if ($numbersGreaterThan500.Count -gt 0) {
             Write-Host "File updated: $($file.Name)"
