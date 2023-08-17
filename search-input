@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Display with Search</title>
+</head>
+<body>
+
+  <header>
+    <img src="amex-logo.png" alt="Amex Logo">
+    <h2>Connex-SRE Useful Links</h2>
+  </header>
+
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search...">
+  </div>
+
+  <table id="dataTable">
+      <thead>
+          <tr>
+              <th>Application</th>
+              <th>Link</th>
+          </tr>
+      </thead>
+      <tbody id="tableBody">
+          <!-- Table rows will be dynamically added here -->
+      </tbody>
+  </table>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    header {
+      background-color: #0074A7;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+    header img {
+      height: 40px;
+      vertical-align: middle;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+
+    /* Styling for the search box */
+    .search-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    #searchInput {
+      padding: 10px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: border-color 0.3s ease-in-out;
+	  background-color:#f2f2f2 ;
+	  color: black;
+	  
+    }
+
+    #searchInput:focus {
+      outline: none;
+      border-color: #0074A7;
+    }
+  </style>
+
+  <script>
+    const dataArray = [
+        { key: 'asd', value: 'https://google.com/ggh' },
+        { key: 'xyz', value: 'https://google.com/ggh' },
+        { key: 'bsd', value: 'https://google.com/ggh' },
+        { key: 'cmd', value: 'https://google.com/ggh' },
+        { key: 'pkr', value: 'https://google.com/ggh' },
+        { key: 'gfc', value: 'https://google.com/ggh' },
+        // Add more objects to your dataArray as needed
+    ];
+
+    const tableBody = document.getElementById('tableBody');
+    const searchInput = document.getElementById('searchInput');
+
+    // Function to generate table rows
+    function generateTableRows(data) {
+        tableBody.innerHTML = '';
+
+        data.forEach(item => {
+            const row = document.createElement('tr');
+            const keyCell = document.createElement('td');
+            const valueCell = document.createElement('td');
+
+            keyCell.textContent = item.key;
+            const link = document.createElement('a');
+            link.href = item.value;
+            link.target = '_blank';
+            link.textContent = item.value;
+            valueCell.appendChild(link);
+
+            row.appendChild(keyCell);
+            row.appendChild(valueCell);
+
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Initial table generation
+    generateTableRows(dataArray);
+
+    // Search functionality
+    searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const filteredData = dataArray.filter(item =>
+            item.key.toLowerCase().includes(searchTerm) ||
+            item.value.toLowerCase().includes(searchTerm)
+        );
+
+        generateTableRows(filteredData);
+    });
+  </script>
+</body>
+</html>
