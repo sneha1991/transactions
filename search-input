@@ -9,24 +9,14 @@
 
   <header>
     <img src="amex-logo.png" alt="Amex Logo">
-    <h2>Connex-SRE Useful Links</h2>
+    <h2>Links by Category</h2>
   </header>
 
   <div class="search-container">
     <input type="text" id="searchInput" placeholder="Search...">
   </div>
 
-  <table id="dataTable">
-      <thead>
-          <tr>
-              <th>Application</th>
-              <th>Link</th>
-          </tr>
-      </thead>
-      <tbody id="tableBody">
-          <!-- Table rows will be dynamically added here -->
-      </tbody>
-  </table>
+  <div id="sections"></div>
 
   <style>
     body {
@@ -42,21 +32,6 @@
       height: 40px;
       vertical-align: middle;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-
-    /* Styling for the search box */
     .search-container {
       text-align: center;
       margin: 20px 0;
@@ -69,67 +44,109 @@
       border-radius: 5px;
       font-size: 16px;
       transition: border-color 0.3s ease-in-out;
-	  background-color:#f2f2f2 ;
-	  color: black;
-	  
     }
 
     #searchInput:focus {
       outline: none;
       border-color: #0074A7;
     }
+
+    .section {
+      margin: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
   </style>
 
   <script>
     const dataArray = [
-        { key: 'asd', value: 'https://google.com/ggh' },
-        { key: 'xyz', value: 'https://google.com/ggh' },
-        { key: 'bsd', value: 'https://google.com/ggh' },
-        { key: 'cmd', value: 'https://google.com/ggh' },
-        { key: 'pkr', value: 'https://google.com/ggh' },
-        { key: 'gfc', value: 'https://google.com/ggh' },
-        // Add more objects to your dataArray as needed
+      { key: 'asd', value: 'https://google.com/ggh', section: 'repolink' },
+      { key: 'xyz', value: 'https://google.com/ggh', section: 'documentlink' },
+      { key: 'bsd', value: 'https://google.com/ggh', section: 'repolink' },
+      { key: 'cmd', value: 'https://google.com/ggh', section: 'documentlink' },
+      { key: 'pkr', value: 'https://google.com/ggh', section: 'repolink' },
+      { key: 'gfc', value: 'https://google.com/ggh', section: 'documentlink' },
+      // Add more objects to your dataArray as needed
     ];
 
-    const tableBody = document.getElementById('tableBody');
+    const sectionsContainer = document.getElementById('sections');
     const searchInput = document.getElementById('searchInput');
 
-    // Function to generate table rows
-    function generateTableRows(data) {
-        tableBody.innerHTML = '';
+    // Function to generate table rows for a specific section
+    function generateTableRowsForSection(data, section) {
+      const sectionContainer = document.createElement('div');
+      sectionContainer.classList.add('section');
 
-        data.forEach(item => {
-            const row = document.createElement('tr');
-            const keyCell = document.createElement('td');
-            const valueCell = document.createElement('td');
+      const sectionTitle = document.createElement('h3');
+      sectionTitle.textContent = section;
+      sectionContainer.appendChild(sectionTitle);
 
-            keyCell.textContent = item.key;
-            const link = document.createElement('a');
-            link.href = item.value;
-            link.target = '_blank';
-            link.textContent = item.value;
-            valueCell.appendChild(link);
+      const table = document.createElement('table');
+      const tbody = document.createElement('tbody');
 
-            row.appendChild(keyCell);
-            row.appendChild(valueCell);
+      data.forEach(item => {
+        if (item.section === section) {
+          const row = document.createElement('tr');
+          const keyCell = document.createElement('td');
+          const valueCell = document.createElement('td');
 
-            tableBody.appendChild(row);
-        });
+          keyCell.textContent = item.key;
+          const link = document.createElement('a');
+          link.href = item.value;
+          link.target = '_blank';
+          link.textContent = item.value;
+          valueCell.appendChild(link);
+
+          row.appendChild(keyCell);
+          row.appendChild(valueCell);
+
+          tbody.appendChild(row);
+        }
+      });
+
+      table.appendChild(tbody);
+      sectionContainer.appendChild(table);
+      sectionsContainer.appendChild(sectionContainer);
     }
 
-    // Initial table generation
-    generateTableRows(dataArray);
+    // Initial sections generation
+    const uniqueSections = [...new Set(dataArray.map(item => item.section))];
 
-    // Search functionality
-    searchInput.addEventListener('input', () => {
+    function generateSections() {
+      sectionsContainer.innerHTML = '';
+
+      uniqueSections.forEach(section => {
         const searchTerm = searchInput.value.toLowerCase();
-        const filteredData = dataArray.filter(item =>
-            item.key.toLowerCase().includes(searchTerm) ||
-            item.value.toLowerCase().includes(searchTerm)
+        const sectionData = dataArray.filter(item =>
+          item.section === section &&
+          (item.key.toLowerCase().includes(searchTerm) || item.value.toLowerCase().includes(searchTerm))
         );
 
-        generateTableRows(filteredData);
-    });
+        if (sectionData.length > 0) {
+          generateTableRowsForSection(sectionData, section);
+        }
+      });
+    }
+
+    // Initial sections generation on page load
+    generateSections();
+
+    // Search functionality
+    searchInput.addEventListener('input', generateSections);
   </script>
 </body>
 </html>
